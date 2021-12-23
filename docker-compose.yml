@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  tmod:
+      build: .
+      container_name: 'tmod'
+      ports:
+          - '7777:7777'
+      volumes:
+          - /etc/localtime:/etc/localtime:ro
+          - ./data:/terraria
+          - ./config.txt:/terraria-server/config.txt
+      environment:
+          - TMOD_SHUTDOWN_MSG="See ya!"
