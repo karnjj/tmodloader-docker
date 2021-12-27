@@ -14,10 +14,10 @@ function shutdown() {
   rm $pipe
 }
 
-server="/terraria-server/tModLoaderServer.bin.x86_64"
+server="/terraria-server/tModLoader64BitServer"
 
 if [ "$1" = "setup" ]; then
-  $server
+  sh $server
 else
   trap shutdown SIGTERM SIGINT
 
@@ -31,7 +31,7 @@ else
     (crontab -l 2>/dev/null; echo "$TMOD_IDLE_CHECK_INTERVAL echo \"$idleMsg\" > $pipe && handle-idle $players") | crontab -
   fi
   mkfifo $pipe
-  tmux new-session -d "$server -config config.txt | tee $pipe $players" &
+  tmux new-session -d "sh $server -config config.txt | tee $pipe $players" &
   sleep 60 && /usr/sbin/crond -d 8 &
   cat $pipe &
 

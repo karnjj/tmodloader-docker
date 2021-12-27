@@ -4,12 +4,9 @@ ARG TMOD_VERSION=0.11.8.5
 ARG TERRARIA_VERSION=1432
 
 RUN apk update &&\
-    apk add --no-cache --virtual build curl unzip &&\
-    apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing mono
+    apk add --no-cache --virtual build curl unzip 
 
 WORKDIR /terraria-server
-
-RUN cp /usr/lib/libMonoPosixHelper.so .
 
 RUN curl -SLO "https://terraria.org/api/download/pc-dedicated-server/terraria-server-${TERRARIA_VERSION}.zip" &&\
     unzip terraria-server-*.zip &&\
@@ -20,13 +17,20 @@ RUN curl -SLO "https://terraria.org/api/download/pc-dedicated-server/terraria-se
 RUN curl -SL "https://github.com/tModLoader/tModLoader/releases/download/v${TMOD_VERSION}/tModLoader.Linux.v${TMOD_VERSION}.tar.gz" | tar -xvz &&\
     chmod u+x tModLoaderServer*
 
+RUN curl -SLO "https://github.com/Dradonhunter11/tModLoader64bit/releases/download/${TMOD_VERSION}/tModLoader64Bit-Linux-Server.zip" &&\
+    unzip -o tModLoader64Bit-Linux-Server.zip &&\
+    rm tModLoader64Bit-Linux-Server.zip &&\
+    chmod +x tModLoader64BitServer*
+
 FROM frolvlad/alpine-glibc:alpine-3.10
 
 WORKDIR /terraria-server
 COPY --from=build /terraria-server ./
 
 RUN apk update &&\
-    apk add --no-cache procps tmux
+    apk add --no-cache procps tmux &&\
+    apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing mono
+
 RUN ln -s ${HOME}/.local/share/Terraria/ /terraria
 COPY inject.sh /usr/local/bin/inject
 COPY handle-idle.sh /usr/local/bin/handle-idle

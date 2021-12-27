@@ -2,8 +2,8 @@
 # https://terraria.gamepedia.com/Guide:Setting_up_a_Terraria_server#Making_a_configuration_file
 
 maxplayers=8
-worldname=World
-world=/terraria/ModLoader/Worlds/World.wld
+worldname=iXiA
+world=/terraria/ModLoader/Worlds/iXiA.wld
 port=7777
 #password=
 motd=Please don’t cut the purple trees!
