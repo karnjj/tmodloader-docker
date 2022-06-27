@@ -13,17 +13,33 @@ RUN curl -SLO "https://github.com/tModLoader/tModLoader/releases/download/v${TMO
     rm tModLoader.zip &&\
     chmod u+x ./LaunchUtils/ScriptCaller.sh
 
+FROM debian:stable-slim as mod-dowload
+
+WORKDIR /steam
+
+COPY install.txt .
+COPY Setup_tModLoaderServer.sh .
+
+RUN apt update &&\
+    apt -y install lib32gcc-s1 curl
+
+RUN curl -SLO "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" &&\
+    tar -xzf steamcmd_linux.tar.gz &&\
+    rm steamcmd_linux.tar.gz &&\
+    chmod u+x steamcmd.sh
+
+RUN ./Setup_tModLoaderServer.sh
+
 FROM debian:stable-slim
 
 WORKDIR /terraria-server
 COPY --from=build /terraria-server ./
+COPY --from=mod-dowload /tmod ./
 
 RUN apt update &&\
     apt -y install procps tmux bash curl cron
 
 RUN apt -y install libicu-dev
-
-RUN apt install steamcmd
 
 RUN ln -s ${HOME}/.local/share/Terraria/ /terraria
 COPY inject.sh /usr/local/bin/inject

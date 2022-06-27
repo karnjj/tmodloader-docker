@@ -31,7 +31,7 @@ else
     (crontab -l 2>/dev/null; echo "$TMOD_IDLE_CHECK_INTERVAL echo \"$idleMsg\" > $pipe && handle-idle $players") | crontab -
   fi
   mkfifo $pipe
-  tmux new-session -d "$server -server | tee $pipe $players"
+  tmux new-session -d "$server -server -config /terraria-server/config.txt | tee $pipe $players"
   sleep 60 && service cron start &
   cat $pipe &
 

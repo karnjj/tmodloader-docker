@@ -9,8 +9,9 @@ services:
           - '7777:7777'
       volumes:
           - /etc/localtime:/etc/localtime:ro
-          - ./data:/terraria
-          - ./data/tModLoader-Logs:/terraria-server/tModLoader-Logs
+          - ./Mods:/terraria/tModLoader/Mods
+          - ./Worlds:/terraria/tModLoader/Worlds
+          - ./logs:/terraria-server/tModLoader-Logs
           - ./config.txt:/terraria-server/config.txt
       environment:
           - TMOD_SHUTDOWN_MSG="See ya!"
