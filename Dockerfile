@@ -20,6 +20,8 @@ WORKDIR /steam
 COPY install.txt .
 COPY Setup_tModLoaderServer.sh .
 
+RUN chmod +x Setup_tModLoaderServer.sh
+
 RUN apt update &&\
     apt -y install lib32gcc-s1 curl
 
