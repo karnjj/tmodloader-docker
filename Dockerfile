@@ -1,34 +1,29 @@
 FROM alpine:3.11.6 as build
 
-ARG TMOD_VERSION=0.11.8.5
-ARG TERRARIA_VERSION=1432
+ARG TMOD_VERSION=2022.05.103.34
+ARG TERRARIA_VERSION=1436
 
 RUN apk update &&\
     apk add --no-cache curl unzip 
 
 WORKDIR /terraria-server
 
-RUN curl -SLO "https://terraria.org/api/download/pc-dedicated-server/terraria-server-${TERRARIA_VERSION}.zip" &&\
-    unzip terraria-server-*.zip &&\
-    rm terraria-server-*.zip &&\
-    cp --verbose -a "${TERRARIA_VERSION}/Linux/." . &&\
-    rm -rf "${TERRARIA_VERSION}"
+RUN curl -SLO "https://github.com/tModLoader/tModLoader/releases/download/v${TMOD_VERSION}/tModLoader.zip" &&\
+    unzip tModLoader.zip &&\
+    rm tModLoader.zip &&\
+    chmod u+x ./LaunchUtils/ScriptCaller.sh
 
-RUN curl -SL "https://github.com/tModLoader/tModLoader/releases/download/v${TMOD_VERSION}/tModLoader.Linux.v${TMOD_VERSION}.tar.gz" | tar -xvz &&\
-    chmod u+x tModLoaderServer*
-
-RUN curl -SLO "https://github.com/Dradonhunter11/tModLoader64bit/releases/download/${TMOD_VERSION}/tModLoader64Bit-Linux-Server.zip" &&\
-    unzip -o tModLoader64Bit-Linux-Server.zip &&\
-    rm tModLoader64Bit-Linux-Server.zip &&\
-    chmod +x tModLoader64BitServer*
-
-FROM frolvlad/alpine-mono:5.4-glibc
+FROM debian:stable-slim
 
 WORKDIR /terraria-server
 COPY --from=build /terraria-server ./
 
-RUN apk update &&\
-    apk add --no-cache procps tmux 
+RUN apt update &&\
+    apt -y install procps tmux bash curl cron
+
+RUN apt -y install libicu-dev
+
+RUN apt install steamcmd
 
 RUN ln -s ${HOME}/.local/share/Terraria/ /terraria
 COPY inject.sh /usr/local/bin/inject
