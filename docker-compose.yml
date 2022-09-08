@@ -15,3 +15,8 @@ services:
           - ./config.txt:/terraria-server/config.txt
       environment:
           - TMOD_SHUTDOWN_MSG="See ya!"
+      networks:
+          - tmod-network
+networks:
+  tmod-network:
+    name: tmod-network
